@@ -1,5 +1,7 @@
-agent
-*.ext4
+build/vmm-agent
+build/*.ext4
+build/vmlinux
+
 
 
 # Added by cargo

@@ -1,28 +1,35 @@
-# CodeBench Agent
+# Agent for MicroVM's
 
-To build the filesystem of the agent VM, see details in [codebench-dev/worker](https://github.com/codebench-dev/worker)
+This is a fork of: https://github.com/codebench-dev/agent
+
 
 ## Build
 
-```sh
-go build
+### Build Linux Kernel
+
+```bash
+make kernel
 ```
 
-Static (for Alpine Linux):
+### Build Rootfs
 
-```sh
-go build -tags netgo -ldflags '-extldflags "-static"'
+```bash
+make rootfs
 ```
 
-## Run
+### Start MicroVM
 
-```sh
-./agent
+```bash
+make start-vm
 ```
 
-## Demo
+### Stop MicroVM
 
-### Healthcheck
+```bash
+make stop-vm
+```
+
+## Healthcheck
 
 ```sh
 » curl -i 127.0.0.1:8080/health
@@ -32,7 +39,7 @@ Date: Sat, 31 Jul 2021 20:02:45 GMT
 Content-Length: 2
 ```
 
-### Compile and run standalone code
+## Compile and run standalone code
 
 ### C
 

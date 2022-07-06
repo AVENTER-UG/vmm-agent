@@ -1,11 +1,11 @@
 #!/sbin/openrc-run
 
 name=$RC_SVCNAME
-description="CodeBench agent"
+description="vmm-agent"
 supervisor="supervise-daemon"
-command="/usr/local/bin/agent"
+command="/usr/local/bin/vmm-agent"
 pidfile="/run/agent.pid"
-command_user="codebench:codebench"
+command_user="vmm:vmm"
 
 depend() {
 	after net

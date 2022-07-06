@@ -1,4 +1,4 @@
-module github.com/codebench-esgi/agent
+module github.com/AVENTER-UG/vmm-agent
 
 go 1.16
 

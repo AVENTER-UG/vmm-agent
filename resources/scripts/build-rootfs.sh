@@ -9,10 +9,8 @@ mount rootfs.ext4 /tmp/my-rootfs
 
 docker run -i --rm \
     -v /tmp/my-rootfs:/my-rootfs \
-    -v "$(pwd)/agent:/usr/local/bin/agent" \
-    -v "$(pwd)/openrc-service.sh:/etc/init.d/agent" \
-    alpine sh <setup-alpine.sh
+    -v "$(pwd)/vmm-agent:/usr/local/bin/vmm-agent" \
+    -v "$(pwd)/../resources/scripts/openrc-service.sh:/etc/init.d/vmm-agent" \
+    alpine sh < ../resources/scripts/setup-alpine.sh
 
 umount /tmp/my-rootfs
-
-# rootfs available under `rootfs.ext4`

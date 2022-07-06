@@ -21,26 +21,6 @@ jobs:
           name: build
           path: agent
 
-  golangci:
-    name: lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v2
-        with:
-          version: v1.41
-
-  commitlint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - name: Lint Commit
-        uses: wagoid/commitlint-github-action@v3
-
   release:
     name: Publish new release
     needs: [build, golangci, commitlint]
@@ -62,5 +42,5 @@ jobs:
           node-version: 14
       - name: Release
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx semantic-release

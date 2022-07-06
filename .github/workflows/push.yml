@@ -23,7 +23,7 @@ jobs:
 
   release:
     name: Publish new release
-    needs: [build, golangci, commitlint]
+    needs: [build]
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:

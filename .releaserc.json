@@ -13,8 +13,8 @@
                 "assets": [
                     {
                         "path": "release.tar.gz",
-                        "name": "worker-${nextRelease.gitTag}-linux-amd64.tar.gz",
-                        "label": "worker-${nextRelease.gitTag}-linux-amd64.tar.gz"
+                        "name": "vmm_agent-${nextRelease.gitTag}-linux-amd64.tar.gz",
+                        "label": "vmm_agent-${nextRelease.gitTag}-linux-amd64.tar.gz"
                     }
                 ]
             }

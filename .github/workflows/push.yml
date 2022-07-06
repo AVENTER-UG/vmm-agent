@@ -18,13 +18,13 @@ jobs:
       - name: upload artifact of build output
         uses: actions/upload-artifact@v2
         with:
-          name: build
+          name: vmm-agent
           path: build/vmm-agent
 
   release:
     name: Publish new release
-    needs: [build]
-    if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -32,7 +32,7 @@ jobs:
       - name: Download build artifact
         uses: actions/download-artifact@v2
         with:
-          name: build
+          name: vmm-agent
           path: .
       - name: Create release archive
         run: tar -czvf release.tar.gz vmm-agent README.md LICENSE

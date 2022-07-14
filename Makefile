@@ -22,7 +22,7 @@ help:
 
 build-bin:
 	@echo ">>>> Build Binary"	
-	@CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags "-X main.BuildVersion=${BUILDDATE} -X main.GitVersion=${TAG} -extldflags \"-static\"" -o build/vmm-agent
+	@cd src; CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags "-X main.BuildVersion=${BUILDDATE} -X main.GitVersion=${TAG} -extldflags \"-static\"" -o ../build/vmm-agent
 
 kernel:
 	@echo ">>>> Build Kernel"	

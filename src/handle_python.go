@@ -5,7 +5,5 @@ import (
 )
 
 func pythonHandler(c echo.Context, req *runReq) error {
-	// TODO handle variant
-
-	return execCmd(c, "python", "/tmp/"+req.ID)
+	return execCmd(c, "python3", "/tmp/"+req.ID)
 }

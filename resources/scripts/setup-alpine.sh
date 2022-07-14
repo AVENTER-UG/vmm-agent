@@ -2,12 +2,16 @@
 
 set -xe
 
-apk add --no-cache openrc
-apk add --no-cache util-linux
+apk add --no-cache openrc util-linux
 apk add --no-cache gcc libc-dev
-apk add --no-cache python3
-apk add --no-cache go
-apk add --no-cache g++
+apk add --no-cache python3 go
+apk add --no-cache g++ git cargo
+
+cd /tmp
+git clone --recurse-submodules https://github.com/bytecodealliance/wasmtime.git
+cd wasmtime
+cargo build --release
+cp ./target/release/wasmtime /usr/local/bin/
 
 ln -s agetty /etc/init.d/agetty.ttyS0
 echo ttyS0 >/etc/securetty

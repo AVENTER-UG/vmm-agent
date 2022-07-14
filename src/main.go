@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"io"
 	"net/http"
 	"os"
 
@@ -20,7 +21,8 @@ type (
 
 	runReq struct {
 		ID       string `json:"id" validate:"required"`
-		Code     string `json:"code" validate:"required"`
+		Code     string `json:"code"`
+		URL      string `json:"code"`
 		Language string `json:"language" validate:"required"`
 		Variant  string `json:"variant" validate:"required"`
 	}
@@ -42,6 +44,7 @@ const (
 	C
 	Cpp
 	Golang
+	WASM
 )
 
 func (s Language) String() string {
@@ -53,6 +56,7 @@ var toString = map[Language]string{
 	C:      "c",
 	Cpp:    "cpp",
 	Golang: "go",
+	WASM:   "wasm",
 }
 
 var toID = map[string]Language{
@@ -60,6 +64,7 @@ var toID = map[string]Language{
 	"c":      C,
 	"cpp":    Cpp,
 	"go":     Golang,
+	"wasm":   WASM,
 }
 
 // MarshalJSON marshals the enum as a quoted json string
@@ -133,14 +138,38 @@ func handleCodeRun(c echo.Context) error {
 
 	defer f.Close()
 
-	_, err = f.WriteString(req.Code)
+	// use code
+	if req.Code != "" {
+		_, err = f.WriteString(req.Code)
 
-	if err != nil {
-		logrus.WithError(err).Error()
-		return c.JSON(http.StatusInternalServerError, runCRes{
-			Stdout: "",
-			Stderr: err.Error(),
-		})
+		if err != nil {
+			logrus.WithError(err).Error()
+			return c.JSON(http.StatusInternalServerError, runCRes{
+				Stdout: "",
+				Stderr: err.Error(),
+			})
+		}
+	}
+	// use precompiles binary
+	if req.URL != "" {
+		client := http.Client{
+			CheckRedirect: func(r *http.Request, via []*http.Request) error {
+				r.URL.Opaque = r.URL.Path
+				return nil
+			},
+		}
+		// Put content on file
+		resp, err := client.Get(req.URL)
+		if err != nil {
+			logrus.WithError(err).Error()
+			return c.JSON(http.StatusInternalServerError, runCRes{
+				Stdout: "",
+				Stderr: err.Error(),
+			})
+		}
+		defer resp.Body.Close()
+
+		_, err = io.Copy(f, resp.Body)
 	}
 
 	// Call language handler
@@ -153,6 +182,8 @@ func handleCodeRun(c echo.Context) error {
 		return cppHandler(c, req)
 	case Golang:
 		return golangHandler(c, req)
+	case WASM:
+		return wasmHandler(c, req)
 	default:
 		return echo.NewHTTPError(http.StatusBadRequest, "Invalid language")
 	}

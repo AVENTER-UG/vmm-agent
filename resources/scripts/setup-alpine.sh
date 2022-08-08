@@ -13,6 +13,8 @@ cd wasmtime
 cargo build --release
 cp ./target/release/wasmtime /usr/local/bin/
 
+apk del git cargo
+
 ln -s agetty /etc/init.d/agetty.ttyS0
 echo ttyS0 >/etc/securetty
 rc-update add agetty.ttyS0 default

@@ -2,7 +2,6 @@
 
 #vars
 IMAGENAME=vmm-agent
-REPO=localhost:5000
 TAG=`git describe`
 BUILDDATE=`date -u +%Y-%m-%dT%H:%M:%SZ`
 BRANCH=`git symbolic-ref --short HEAD`
@@ -26,7 +25,8 @@ build-bin:
 
 kernel:
 	@echo ">>>> Build Kernel"	
-	@cd build; docker run -i -u 1000:1000 -v $PWD:/data avhost/ubuntu_build:jammy /bin/bash < ../resources/scripts/build-kernel.sh
+	@curl -l https://dl-cdn.alpinelinux.org/alpine/v3.16/releases/x86_64/alpine-netboot-3.16.2-x86_64.tar.gz | tar -xzv boot/vmlinuz-lts  --strip-components=1 
+	@mv vmlinuz-lts ./build/vmlinuz
 
 rootfs:
 	@echo ">>>> Build Rootfs"

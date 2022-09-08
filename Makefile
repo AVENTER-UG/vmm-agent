@@ -30,7 +30,7 @@ kernel:
 
 rootfs:
 	@echo ">>>> Build Rootfs"
-	@cd build; sudo ../resources/scripts/build-rootfs.sh	
+	@cd build; ../resources/scripts/build-rootfs.sh	
 
 start-vm:
 	@echo ">>>> Start VM"

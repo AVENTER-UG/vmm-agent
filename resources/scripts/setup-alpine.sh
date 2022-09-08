@@ -7,6 +7,9 @@ apk add --no-cache gcc libc-dev
 apk add --no-cache python3 go
 apk add --no-cache g++ git cargo
 
+mkdir /my-rootfs
+mount /data/rootfs.ext4 /my-rootfs
+
 cd /tmp
 git clone --recurse-submodules https://github.com/bytecodealliance/wasmtime.git
 cd wasmtime
@@ -37,3 +40,6 @@ for dir in dev proc run sys var tmp; do mkdir /my-rootfs/${dir}; done
 chmod 1777 /my-rootfs/tmp
 mkdir -p /my-rootfs/home/vmm/
 chown 1000:1000 /my-rootfs/home/vmm/
+
+umount /my-rootfs
+

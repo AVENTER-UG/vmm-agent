@@ -21,7 +21,7 @@ help:
 
 build-bin:
 	@echo ">>>> Build Binary"	
-	@cd src; CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags "-X main.BuildVersion=${BUILDDATE} -X main.GitVersion=${TAG} -extldflags \"-static\"" -o ../build/vmm-agent main.go handle_wasm.go handle_python.go handle_cpp.go handle_golang.go handle_c.go exec.go
+	@cd src; CGO_ENABLED=0 GOOS=linux go build -ldflags "-s -w -X main.BuildVersion=${BUILDDATE} -X main.GitVersion=${TAG} -extldflags \"-static\"" -o ../build/vmm-agent main.go handle_wasm.go handle_python.go handle_cpp.go handle_golang.go handle_c.go exec.go
 
 kernel:
 	@echo ">>>> Build Kernel"	

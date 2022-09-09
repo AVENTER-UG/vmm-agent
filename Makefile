@@ -2,6 +2,7 @@
 
 #vars
 IMAGENAME=vmm-agent
+REPO=localhost:5000
 TAG=`git describe`
 BUILDDATE=`date -u +%Y-%m-%dT%H:%M:%SZ`
 BRANCH=`git symbolic-ref --short HEAD`

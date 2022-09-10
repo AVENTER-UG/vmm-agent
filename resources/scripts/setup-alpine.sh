@@ -1,13 +1,12 @@
 #!/bin/sh
 
-set -xe
-
 apk add --no-cache openrc util-linux
 apk add --no-cache gcc libc-dev
 apk add --no-cache python3 go
 apk add --no-cache g++ git cargo
 
 mkdir /my-rootfs
+ls -l /my-rootfs
 mount /data/rootfs.ext4 /my-rootfs
 
 cd /tmp

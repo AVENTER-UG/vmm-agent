@@ -1,4 +1,4 @@
-package main
+package handle
 
 import (
 	"bytes"
@@ -11,7 +11,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func execCmd(c echo.Context, program string, arg ...string) error {
+func ExecCmd(c echo.Context, program string, arg ...string) error {
 	var execStdOut, execStdErr bytes.Buffer
 
 	cmd := exec.Command(program, arg...)

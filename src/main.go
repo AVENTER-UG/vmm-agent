@@ -8,7 +8,8 @@ import (
 	"net/http"
 	"os"
 
-	_ "github.com/AVENTER-UG/vmm-agent/types"
+	"github.com/AVENTER-UG/vmm-agent/src/handle"
+	"github.com/AVENTER-UG/vmm-agent/src/types"
 	"github.com/go-playground/validator"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -97,7 +98,7 @@ func health(c echo.Context) error {
 }
 
 func handleCodeRun(c echo.Context) error {
-	req := new(types.runReq)
+	req := new(types.RunReq)
 	err := c.Bind(req)
 	if err != nil {
 		return err
@@ -112,7 +113,7 @@ func handleCodeRun(c echo.Context) error {
 
 	if err != nil {
 		logrus.WithError(err).Error()
-		return c.JSON(http.StatusInternalServerError, runCRes{
+		return c.JSON(http.StatusInternalServerError, types.RunCRes{
 			Stdout: "",
 			Stderr: err.Error(),
 		})
@@ -126,7 +127,7 @@ func handleCodeRun(c echo.Context) error {
 
 		if err != nil {
 			logrus.WithError(err).Error()
-			return c.JSON(http.StatusInternalServerError, runCRes{
+			return c.JSON(http.StatusInternalServerError, types.RunCRes{
 				Stdout: "",
 				Stderr: err.Error(),
 			})
@@ -144,7 +145,7 @@ func handleCodeRun(c echo.Context) error {
 		src, err := req.File.Open()
 		if err != nil {
 			logrus.WithField("func", "main.handleCodeRun").Error("Error during open receive file: ", err.Error())
-			return c.JSON(http.StatusInternalServerError, runCRes{
+			return c.JSON(http.StatusInternalServerError, types.RunCRes{
 				Stdout: "",
 				Stderr: err.Error(),
 			})
@@ -154,7 +155,7 @@ func handleCodeRun(c echo.Context) error {
 
 		if _, err = io.Copy(f, src); err != nil {
 			logrus.WithField("func", "main.handleCodeRun").Error("Error during write receive file: ", err.Error())
-			return c.JSON(http.StatusInternalServerError, runCRes{
+			return c.JSON(http.StatusInternalServerError, types.RunCRes{
 				Stdout: "",
 				Stderr: err.Error(),
 			})
@@ -164,15 +165,15 @@ func handleCodeRun(c echo.Context) error {
 	// Call language handler
 	switch toID[req.Language] {
 	case WASM:
-		return wasmHandler(c, req)
+		return handle.WASMHandler(c, req)
 	case Python:
-		return pythonHandler(c, req)
+		return handle.PythonHandler(c, req)
 	case C:
-		return cHandler(c, req)
+		return handle.CHandler(c, req)
 	case Cpp:
-		return cppHandler(c, req)
+		return handle.CPPHandler(c, req)
 	case Golang:
-		return golangHandler(c, req)
+		return handle.GoLangHandler(c, req)
 	default:
 		return echo.NewHTTPError(http.StatusBadRequest, "Invalid language")
 	}

@@ -5,10 +5,11 @@ import (
 	"net/http"
 	"os/exec"
 
+	"github.com/AVENTER-UG/vmm-agent/src/types"
 	"github.com/labstack/echo/v4"
 )
 
-func cHandler(c echo.Context, req *runReq) error {
+func CHandler(c echo.Context, req *types.RunReq) error {
 	// TODO handle variant
 
 	// Compile code
@@ -19,7 +20,7 @@ func cHandler(c echo.Context, req *runReq) error {
 	err := compileCmd.Run()
 
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, runCRes{
+		return c.JSON(http.StatusBadRequest, types.RunCRes{
 			Message: "Failed to compile",
 			Error:   err.Error(),
 			Stdout:  compileStdOut.String(),
@@ -28,5 +29,5 @@ func cHandler(c echo.Context, req *runReq) error {
 	}
 
 	// Run executable
-	return execCmd(c, "/tmp/"+req.ID+".out")
+	return ExecCmd(c, "/tmp/"+req.ID+".out")
 }

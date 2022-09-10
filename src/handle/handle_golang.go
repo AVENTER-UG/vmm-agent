@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os/exec"
 
+	"github.com/AVENTER-UG/vmm-agent/src/types"
 	"github.com/labstack/echo/v4"
 )
 
@@ -18,12 +19,12 @@ func copy(src string, dst string) error {
 	return err
 }
 
-func golangHandler(c echo.Context, req *runReq) error {
+func GoLangHandler(c echo.Context, req *types.RunReq) error {
 	// TODO handle variant
 
 	err := copy("/tmp/"+req.ID, "/tmp/"+req.ID+".go")
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, runCRes{
+		return c.JSON(http.StatusInternalServerError, types.RunCRes{
 			Message: "Failed to copy file",
 			Error:   err.Error(),
 		})
@@ -36,7 +37,7 @@ func golangHandler(c echo.Context, req *runReq) error {
 	err = compileCmd.Run()
 
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, runCRes{
+		return c.JSON(http.StatusBadRequest, types.RunCRes{
 			Message: "Failed to compile",
 			Error:   err.Error(),
 			Stdout:  compileStdOut.String(),
@@ -45,5 +46,5 @@ func golangHandler(c echo.Context, req *runReq) error {
 	}
 
 	// Run executable
-	return execCmd(c, "/tmp/"+req.ID+".out")
+	return ExecCmd(c, "/tmp/"+req.ID+".out")
 }

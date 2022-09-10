@@ -92,7 +92,7 @@ Content-Length: 108
 ### Wasm
 
 ```
-» curl -i localhost:8080/run -X POST --data '{"url":"","id":"123","variant":"go","language":"go"}' -H 'Content-Type: application/json'
+» curl -i localhost:8080/run -X POST -F file=@main.wasm -F id=1234 -F language=wasm -F variant=wasm
 HTTP/1.1 200 OK
 Content-Type: application/json; charset=UTF-8
 Date: Sat, 31 Jul 2021 20:07:14 GMT

@@ -13,6 +13,7 @@ import (
 	"github.com/go-playground/validator"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/labstack/gommon/log"
 	"github.com/sirupsen/logrus"
 )
 
@@ -75,6 +76,8 @@ func (s *Language) UnmarshalJSON(b []byte) error {
 
 func main() {
 	e := echo.New()
+	e.Logger.SetLevel(log.DEBUG)
+
 	e.Validator = &CustomValidator{validator: validator.New()}
 
 	e.Use(middleware.Logger())
@@ -82,8 +85,9 @@ func main() {
 
 	e.POST("/run", handleCodeRun)
 	e.GET("/health", health)
+	e.GET("/shutdown", shutdown)
 
-	e.Logger.Fatal(e.Start(":8085"))
+	e.Logger.Info(e.Start(":8085"))
 }
 
 func (cv *CustomValidator) Validate(i interface{}) error {
@@ -91,6 +95,11 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	return nil
+}
+
+func shutdown(c echo.Context) error {
+	c.Echo().Server.Close()
+	return c.String(http.StatusOK, "OK")
 }
 
 func health(c echo.Context) error {

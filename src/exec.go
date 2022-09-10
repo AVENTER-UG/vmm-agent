@@ -7,6 +7,7 @@ import (
 	"syscall"
 	"time"
 
+	_ "github.com/AVENTER-UG/vmm-agent/types"
 	"github.com/labstack/echo/v4"
 )
 
@@ -22,7 +23,7 @@ func execCmd(c echo.Context, program string, arg ...string) error {
 	elapsed := time.Since(start)
 
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, runCRes{
+		return c.JSON(http.StatusBadRequest, types.runCRes{
 			Message:      "Failed to run",
 			Error:        err.Error(),
 			Stdout:       execStdOut.String(),

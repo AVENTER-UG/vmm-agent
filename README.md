@@ -88,3 +88,15 @@ Content-Length: 108
 
 {"message":"Success","error":"","stdout":"Hello, Go!\n","stderr":"","exec_duration":4706,"mem_usage":10620}
 ```
+
+### Wasm
+
+```
+» curl -i localhost:8080/run -X POST --data '{"url":"","id":"123","variant":"go","language":"go"}' -H 'Content-Type: application/json'
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+Date: Sat, 31 Jul 2021 20:07:14 GMT
+Content-Length: 108
+
+{"message":"Success","error":"","stdout":"Hello, Go!\n","stderr":"","exec_duration":4706,"mem_usage":10620}
+```

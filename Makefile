@@ -3,11 +3,11 @@
 #vars
 IMAGENAME=vmm-agent
 REPO=localhost:5000
-TAG=`git describe`
-BUILDDATE=`date -u +%Y-%m-%dT%H:%M:%SZ`
-BRANCH=`git symbolic-ref --short HEAD`
+TAG=$(shell git describe)
+BUILDDATE=$(shell date -u +%Y-%m-%dT%H:%M:%SZ)
+BRANCH=$(shell git symbolic-ref --short HEAD)
 
-.PHONY: help build-bin kernel rootfs
+.PHONY: help build-bin kernel rootfs run
 
 help:
 	    @echo "Makefile arguments:"
@@ -23,6 +23,10 @@ help:
 build-bin:
 	@echo ">>>> Build Binary"	
 	@cd src; CGO_ENABLED=0 GOOS=linux go build -ldflags "-s -w -X main.BuildVersion=${BUILDDATE} -X main.GitVersion=${TAG} -extldflags \"-static\"" -o ../build/vmm-agent main.go handle_wasm.go handle_python.go handle_cpp.go handle_golang.go handle_c.go exec.go
+
+run:
+	@echo ">>>> Run"
+	@cd src; CGO_ENABLED=0 GOOS=linux go run  main.go handle_wasm.go handle_python.go handle_cpp.go handle_golang.go handle_c.go exec.go
 
 kernel:
 	@echo ">>>> Build Kernel"	

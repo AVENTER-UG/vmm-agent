@@ -8,36 +8,18 @@ import (
 	"net/http"
 	"os"
 
+	_ "github.com/AVENTER-UG/vmm-agent/types"
 	"github.com/go-playground/validator"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/sirupsen/logrus"
 )
 
-type (
-	CustomValidator struct {
-		validator *validator.Validate
-	}
-
-	runReq struct {
-		ID       string `json:"id" validate:"required"`
-		Code     string `json:"code"`
-		URL      string `json:"code"`
-		Language string `json:"language" validate:"required"`
-		Variant  string `json:"variant" validate:"required"`
-	}
-
-	runCRes struct {
-		Message      string `json:"message"`
-		Error        string `json:"error"`
-		Stdout       string `json:"stdout"`
-		Stderr       string `json:"stderr"`
-		ExecDuration int64  `json:"exec_duration"`
-		MemUsage     int64  `json:"mem_usage"`
-	}
-)
-
 type Language int
+
+type CustomValidator struct {
+	validator *validator.Validate
+}
 
 const (
 	Python = iota + 1
@@ -100,7 +82,7 @@ func main() {
 	e.POST("/run", handleCodeRun)
 	e.GET("/health", health)
 
-	e.Logger.Fatal(e.Start(":8080"))
+	e.Logger.Fatal(e.Start(":8085"))
 }
 
 func (cv *CustomValidator) Validate(i interface{}) error {
@@ -115,7 +97,7 @@ func health(c echo.Context) error {
 }
 
 func handleCodeRun(c echo.Context) error {
-	req := new(runReq)
+	req := new(types.runReq)
 	err := c.Bind(req)
 	if err != nil {
 		return err
@@ -150,30 +132,39 @@ func handleCodeRun(c echo.Context) error {
 			})
 		}
 	}
+
 	// use precompiles binary
-	if req.URL != "" {
-		client := http.Client{
-			CheckRedirect: func(r *http.Request, via []*http.Request) error {
-				r.URL.Opaque = r.URL.Path
-				return nil
-			},
-		}
-		// Put content on file
-		resp, err := client.Get(req.URL)
+	req.File, err = c.FormFile("file")
+	if err == nil {
+
+		logrus.WithField("func", "main.handleCodeRun").Infof("Uploaded File: %+v\n", req.File.Filename)
+		logrus.WithField("func", "main.handleCodeRun").Infof("File Size: %+v\n", req.File.Size)
+		logrus.WithField("func", "main.handleCodeRun").Infof("MIME Header: %+v\n", req.File.Header)
+
+		src, err := req.File.Open()
 		if err != nil {
-			logrus.WithError(err).Error()
+			logrus.WithField("func", "main.handleCodeRun").Error("Error during open receive file: ", err.Error())
 			return c.JSON(http.StatusInternalServerError, runCRes{
 				Stdout: "",
 				Stderr: err.Error(),
 			})
 		}
-		defer resp.Body.Close()
 
-		_, err = io.Copy(f, resp.Body)
+		defer src.Close()
+
+		if _, err = io.Copy(f, src); err != nil {
+			logrus.WithField("func", "main.handleCodeRun").Error("Error during write receive file: ", err.Error())
+			return c.JSON(http.StatusInternalServerError, runCRes{
+				Stdout: "",
+				Stderr: err.Error(),
+			})
+		}
 	}
 
 	// Call language handler
 	switch toID[req.Language] {
+	case WASM:
+		return wasmHandler(c, req)
 	case Python:
 		return pythonHandler(c, req)
 	case C:
@@ -182,8 +173,6 @@ func handleCodeRun(c echo.Context) error {
 		return cppHandler(c, req)
 	case Golang:
 		return golangHandler(c, req)
-	case WASM:
-		return wasmHandler(c, req)
 	default:
 		return echo.NewHTTPError(http.StatusBadRequest, "Invalid language")
 	}

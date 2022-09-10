@@ -87,7 +87,7 @@ func main() {
 	e.GET("/health", health)
 	e.GET("/shutdown", shutdown)
 
-	e.Logger.Info(e.Start(":8085"))
+	e.Logger.Info(e.Start(":8080"))
 }
 
 func (cv *CustomValidator) Validate(i interface{}) error {

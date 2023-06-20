@@ -1,6 +1,6 @@
 #!/bin/sh
 
-apk add --no-cache openrc util-linux
+apk add --no-cache openrc util-linux 
 apk add --no-cache gcc libc-dev
 apk add --no-cache python3 go
 apk add --no-cache g++ git cargo
@@ -31,7 +31,7 @@ rc-update add devfs boot
 rc-update add procfs boot
 rc-update add sysfs boot
 
-rc-update add vmm-agent boot
+rc-update add vmm-agent 
 
 for d in bin etc lib root sbin usr; do tar c "/$d" | tar x -C /my-rootfs; done
 for dir in dev proc run sys var tmp; do mkdir /my-rootfs/${dir}; done

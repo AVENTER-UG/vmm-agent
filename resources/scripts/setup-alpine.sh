@@ -8,6 +8,9 @@ apk add --no-cache g++ git cargo
 cp /boot/vmlinuz-virt /data/vmlinuz
 cp /boot/initramfs-virt /data/initramfs
 
+chmod 644 /data/vmlinuz
+chmod 644 /data/initramfs
+
 extract-vmlinux /boot/vmlinuz-virt > /data/vmlinux
 
 apk del linux-virt

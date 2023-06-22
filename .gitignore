@@ -1,7 +1,5 @@
 build/vmm-agent
 build/*.ext4
-build/vmlinux
-build/*
 
 
 

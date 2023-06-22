@@ -40,4 +40,4 @@ stop-vm:
 	@echo ">>>> Stop VM"
 	@cd ./resources/scripts; sudo ./stop-microvm.sh
 
-all: build-bin rootfs
+all: build-bin kernel rootfs

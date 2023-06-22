@@ -5,13 +5,7 @@ This is a fork of: https://github.com/codebench-dev/agent
 
 ## Build
 
-### Build Linux Kernel
-
-```bash
-make kernel
-```
-
-### Build Rootfs
+### Build Rootfs and Kernel
 
 ```bash
 make rootfs

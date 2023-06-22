@@ -1,19 +1,9 @@
 #!/bin/sh
 
-apk add --no-cache openrc util-linux openssh-server linux-virt curl grep binutils
+apk add --no-cache openrc util-linux openssh-server curl grep binutils strace
 apk add --no-cache gcc libc-dev
 apk add --no-cache python3 go
 apk add --no-cache g++ git cargo
-
-cp /boot/vmlinuz-virt /data/vmlinuz
-cp /boot/initramfs-virt /data/initramfs
-
-chmod 644 /data/vmlinuz
-chmod 644 /data/initramfs
-
-extract-vmlinux /boot/vmlinuz-virt > /data/vmlinux
-
-apk del linux-virt
 
 mkdir /my-rootfs
 ls -l /my-rootfs
@@ -36,16 +26,18 @@ echo "root:root" | chpasswd
 echo "nameserver 1.1.1.1" >>/etc/resolv.conf
 
 addgroup -g 1000 -S vmm && adduser -u 1000 -S vmm -G vmm
+echo "vmm:vmm" | chpasswd
 
 echo rc_crashed_stop=YES > /etc/rc.conf
 echo PermitRootLogin prohibit-password >> /etc/ssh/sshd_config
+echo PasswordAuthentication yes >> /etc/ssh/sshd_config
 
 rc-update add devfs boot
 rc-update add procfs boot
 rc-update add sysfs boot
 
-rc-update add sshd
-rc-update add vmm-agent 
+rc-update add sshd boot
+rc-update add vmm-agent boot
 
 for d in bin etc lib root sbin usr; do tar c "/$d" | tar x -C /my-rootfs; done
 for dir in dev proc run sys var tmp; do mkdir /my-rootfs/${dir}; done

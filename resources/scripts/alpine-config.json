@@ -1,15 +1,14 @@
 {
   "boot-source": {
-    "initrd_path": "../../build/initramfs",
     "kernel_image_path": "../../build/vmlinux",
-    "boot_args": "ro console=ttyS0 noapic reboot=k panic=1 pci=off modules=virtio_mmio,ext4 rootfstype=ext4  random.trust_cpu=on ip=172.20.0.42::172.20.0.1:255.255.255.0::eth0:off"
+    "boot_args": "rw console=ttyS0 noapic reboot=k panic=1 pci=off nomodules random.trust_cpu=on ip=172.20.0.42::172.20.0.1:255.255.255.0::eth0:on"
   },
   "drives": [
     {
       "drive_id": "rootfs",
       "path_on_host": "../../build/rootfs.ext4",
       "is_root_device": true,
-      "is_read_only": false
+      "is_read_only": false 
     }
   ],
   "network-interfaces": [

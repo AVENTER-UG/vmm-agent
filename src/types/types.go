@@ -8,6 +8,7 @@ type (
 	RunReq struct {
 		ID       string                `json:"id" validate:"required" form:"id"`
 		Code     string                `json:"code"`
+		Command  string                `json:"command"`
 		File     *multipart.FileHeader `json:"file" form:"file"`
 		Language string                `json:"language" validate:"required" form:"language"`
 		Variant  string                `json:"variant" validate:"required" form:"variant"`

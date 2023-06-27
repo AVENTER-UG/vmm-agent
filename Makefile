@@ -22,7 +22,7 @@ help:
 
 build-bin:
 	@echo ">>>> Build Binary"	
-	@cd src; CGO_ENABLED=0 GOOS=linux go build -ldflags "-s -w -X main.BuildVersion=${BUILDDATE} -X main.GitVersion=${TAG} -extldflags \"-static\"" -o ../build/vmm-agent .
+	cd src; CGO_ENABLED=0 GOOS=linux go build -ldflags "-s -w -X main.BuildVersion=${BUILDDATE} -X main.GitVersion=${TAG} -extldflags \"-static\"" -o ../build/vmm-agent .
 
 run:
 	@echo ">>>> Run"
@@ -40,4 +40,4 @@ stop-vm:
 	@echo ">>>> Stop VM"
 	@cd ./resources/scripts; sudo ./stop-microvm.sh
 
-all: build-bin kernel rootfs
+all: build-bin rootfs

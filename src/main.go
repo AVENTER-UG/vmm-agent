@@ -13,7 +13,6 @@ import (
 	"github.com/go-playground/validator"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/labstack/gommon/log"
 	"github.com/sirupsen/logrus"
 )
 
@@ -23,12 +22,20 @@ type CustomValidator struct {
 	validator *validator.Validate
 }
 
+// BuildVersion
+var BuildVersion string
+
+// GitVersion is the revision and commit number
+var GitVersion string
+
 const (
 	Python = iota + 1
 	C
 	Cpp
 	Golang
 	WASM
+	Bash
+	Command
 )
 
 func (s Language) String() string {
@@ -36,19 +43,23 @@ func (s Language) String() string {
 }
 
 var toString = map[Language]string{
-	Python: "python",
-	C:      "c",
-	Cpp:    "cpp",
-	Golang: "go",
-	WASM:   "wasm",
+	Python:  "python",
+	C:       "c",
+	Cpp:     "cpp",
+	Golang:  "go",
+	WASM:    "wasm",
+	Bash:    "bash",
+	Command: "command",
 }
 
 var toID = map[string]Language{
-	"python": Python,
-	"c":      C,
-	"cpp":    Cpp,
-	"go":     Golang,
-	"wasm":   WASM,
+	"python":  Python,
+	"c":       C,
+	"cpp":     Cpp,
+	"go":      Golang,
+	"wasm":    WASM,
+	"bash":    Bash,
+	"command": Command,
 }
 
 // MarshalJSON marshals the enum as a quoted json string
@@ -75,8 +86,11 @@ func (s *Language) UnmarshalJSON(b []byte) error {
 }
 
 func main() {
+
+	logrus.WithField("func", "main").Println("vmm-agent build " + BuildVersion + " git " + GitVersion)
+	logrus.SetLevel(logrus.DebugLevel)
+
 	e := echo.New()
-	e.Logger.SetLevel(log.DEBUG)
 
 	e.Validator = &CustomValidator{validator: validator.New()}
 
@@ -87,7 +101,7 @@ func main() {
 	e.GET("/health", health)
 	e.GET("/shutdown", shutdown)
 
-	e.Logger.Info(e.Start(":8085"))
+	logrus.WithField("func", "main").Info(e.Start(":8085"))
 }
 
 func (cv *CustomValidator) Validate(i interface{}) error {
@@ -121,7 +135,7 @@ func handleCodeRun(c echo.Context) error {
 	f, err := os.Create("/tmp/" + req.ID)
 
 	if err != nil {
-		logrus.WithError(err).Error()
+		logrus.WithField("func", "main.handleCodeRun").WithError(err).Error()
 		return c.JSON(http.StatusInternalServerError, types.RunCRes{
 			Stdout: "",
 			Stderr: err.Error(),
@@ -183,6 +197,10 @@ func handleCodeRun(c echo.Context) error {
 		return handle.CPPHandler(c, req)
 	case Golang:
 		return handle.GoLangHandler(c, req)
+	case Bash:
+		return handle.BashHandler(c, req)
+	case Command:
+		return handle.CommandHandler(c, req)
 	default:
 		return echo.NewHTTPError(http.StatusBadRequest, "Invalid language")
 	}

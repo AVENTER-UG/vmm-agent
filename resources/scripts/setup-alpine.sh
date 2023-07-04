@@ -1,6 +1,6 @@
 #!/bin/sh
 
-apk add --no-cache openrc util-linux openssh-server curl grep binutils strace
+apk add --no-cache openrc util-linux openssh-server curl grep binutils strace bash
 apk add --no-cache gcc libc-dev
 apk add --no-cache python3 go
 apk add --no-cache g++ git cargo

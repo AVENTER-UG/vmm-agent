@@ -7,6 +7,6 @@ import (
 )
 
 func CommandHandler(c echo.Context, req *types.RunReq) error {
-	logrus.WithField("func", "main.CommandHandler").Info("Execute Command: ", req.ID)
+	logrus.WithField("func", "main.CommandHandler").Info("Execute Command: ", req.Command)
 	return ExecCmd(c, "/bin/bash", "-c", req.Command)
 }

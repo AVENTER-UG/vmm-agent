@@ -100,6 +100,7 @@ func main() {
 	e.POST("/run", handleCodeRun)
 	e.GET("/health", health)
 	e.GET("/shutdown", shutdown)
+	e.GET("/version", version)
 
 	logrus.WithField("func", "main").Info(e.Start(":8085"))
 }
@@ -114,6 +115,10 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 func shutdown(c echo.Context) error {
 	c.Echo().Server.Close()
 	return c.String(http.StatusOK, "OK")
+}
+
+func version(c echo.Context) error {
+	return c.String(http.StatusOK, BuildVersion)
 }
 
 func health(c echo.Context) error {

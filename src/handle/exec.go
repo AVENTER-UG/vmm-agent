@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"net/http"
 	"os/exec"
-	"syscall"
 	"time"
 
 	"github.com/AVENTER-UG/vmm-agent/src/types"
@@ -29,7 +28,6 @@ func ExecCmd(c echo.Context, program string, arg ...string) error {
 			Stdout:       execStdOut.String(),
 			Stderr:       execStdErr.String(),
 			ExecDuration: elapsed.Microseconds(),
-			MemUsage:     cmd.ProcessState.SysUsage().(*syscall.Rusage).Maxrss,
 		})
 	}
 
@@ -38,6 +36,5 @@ func ExecCmd(c echo.Context, program string, arg ...string) error {
 		Stdout:       execStdOut.String(),
 		Stderr:       execStdErr.String(),
 		ExecDuration: elapsed.Microseconds(),
-		MemUsage:     cmd.ProcessState.SysUsage().(*syscall.Rusage).Maxrss,
 	})
 }

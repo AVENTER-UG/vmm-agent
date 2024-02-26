@@ -1,12 +1,12 @@
 {
   "boot-source": {
     "kernel_image_path": "../../build/vmlinux",
-    "boot_args": "rw console=ttyS0 noapic reboot=k panic=1 pci=off nomodules random.trust_cpu=on ip=172.20.0.42::172.20.0.1:255.255.255.0::eth0:on"
+    "boot_args": "rw console=ttyS0 noapic reboot=k panic=1 pci=off init=/sbin/init nomodules random.trust_cpu=on ip=172.20.0.42::172.20.0.1:255.255.255.0::eth0:on"
   },
   "drives": [
     {
       "drive_id": "rootfs",
-      "path_on_host": "../../build/rootfs.ext4",
+      "path_on_host": "../../build/debian-11.ext4",
       "is_root_device": true,
       "is_read_only": false 
     }

@@ -4,6 +4,9 @@ apk add --no-cache openrc util-linux openssh-server curl grep binutils strace ba
 apk add --no-cache gcc libc-dev
 apk add --no-cache python3 go
 apk add --no-cache g++ git cargo
+apk add linux-lts
+
+cp /boot/vmlinuz-lts /data/vmlinuz
 
 mkdir /my-rootfs
 ls -l /my-rootfs
@@ -16,6 +19,7 @@ cargo build --release
 cp ./target/release/wasmtime /usr/local/bin/
 
 apk del git cargo
+apk del linux-lts
 
 ln -s agetty /etc/init.d/agetty.ttyS0
 echo ttyS0 >/etc/securetty
@@ -47,5 +51,6 @@ mkdir -p /my-rootfs/home/vmm/
 chown 1000:1000 /my-rootfs/home/vmm/
 
 umount /my-rootfs
+
 
 

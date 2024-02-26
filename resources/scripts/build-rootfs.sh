@@ -10,7 +10,7 @@ docker run -i --rm \
     -v "$(pwd)/vmm-agent:/usr/local/bin/vmm-agent" \
     -v "$(pwd)/../resources/scripts/openrc-service.sh:/etc/init.d/vmm-agent" \
     --privileged \
-    debian:11 sh < ../resources/scripts/setup-debian.sh
+    alpine sh < ../resources/scripts/setup-alpine.sh
 
 ../resources/scripts/extract-vmlinux vmlinuz > vmlinux    
 

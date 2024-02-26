@@ -40,4 +40,18 @@ stop-vm:
 	@echo ">>>> Stop VM"
 	@cd ./resources/scripts; sudo ./stop-microvm.sh
 
+seccheck:
+	grype --add-cpes-if-none .
+
+sboom:
+	syft dir:. > sbom.txt
+	syft dir:. -o json > sbom.json
+
+go-fmt:
+	@cd src; gofmt -w .
+
+update-gomod:
+	@cd src; go get -u
+
 all: build-bin rootfs
+check: go-fmt sboom seccheck
